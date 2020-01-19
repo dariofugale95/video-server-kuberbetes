@@ -1,0 +1,143 @@
+version: "3"
+
+networks:
+  video-network: 
+    driver: bridge  
+
+services:
+
+  apigateway:        
+  
+    image: apigateway:v1
+
+    container_name: apigateway-container
+
+    ports:
+      - "8081:8081"
+
+    depends_on:
+      - videomanagementservice
+
+    volumes:
+      - ./Storage:/storage
+
+    environment:
+        
+      - urlVMSer=videomanagementservice
+
+    build:
+        context: ../apigateway
+        dockerfile: Dockerfile-dev
+
+    networks:
+      video-network:
+
+  
+  prometheus:
+
+    image: prom/prometheus
+
+    container_name: prometheus-container
+
+    ports:
+      - "9090:9090"
+
+    volumes:
+      - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+    build:
+        context: ../prometheus
+        dockerfile: Dockerfile-dev
+
+  
+
+  grafana:
+
+    image: grafana/grafana
+
+    container_name: grafana-container
+
+    ports:
+      - "3000:3000"
+
+
+  videomanagementservice:
+
+    image: videomanagementservice:v1
+
+    container_name: videomanagementservice-container
+
+    ports:
+      - "8080:8080"
+
+    networks:
+      video-network:
+
+    depends_on:
+      - mongodb
+      - videoprocessingservice
+
+    environment:
+      MONGO_ROOT_USERNAME: admin
+      MONGO_ROOT_PASSWORD: admin
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      MONGO_DBNAME: video-server
+    
+    build:
+        context: ../videomanagementservice
+        dockerfile: Dockerfile-dev
+
+    volumes:
+      - ./Storage:/storage
+
+
+  videoprocessingservice:
+
+    image: videoprocessingservice:v1
+
+    container_name: videoprocessingservice-container
+
+    environment:
+      - urlVPSer=videoprocessingservice
+
+    ports:
+      - "8085:8085"
+
+    build:
+        context: ../videoprocessingservice
+        dockerfile: Dockerfile-dev
+
+    networks:
+      video-network:
+
+    volumes:
+      - ./Storage:/storage
+
+
+  mongodb:
+
+    image: mongo:latest
+
+    container_name: mongo-container
+
+    restart: always
+
+    ports:
+     - "27017:27017"
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+
+    volumes:
+     - ./.docker/mongodb/mongod.conf:/etc/mongod.conf
+     - ./.docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+     - ./.docker/mongodb/data/db/:/data/db/
+     - ./.docker/mongodb/data/log/:/var/log/mongodb/
+
+    networks:
+      video-network:    

@@ -1,0 +1,15 @@
+#EXTM3U
+#EXT-X-VERSION:6
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:1
+#EXT-X-MAP:URI="init-stream1.m4s"
+#EXTINF:8.196644,
+chunk-stream1-00001.m4s
+#EXTINF:6.385488,
+chunk-stream1-00002.m4s
+#EXTINF:5.712109,
+chunk-stream1-00003.m4s
+#EXTINF:10.472200,
+chunk-stream1-00004.m4s
+#EXTINF:10.379320,
+chunk-stream1-00005.m4s
