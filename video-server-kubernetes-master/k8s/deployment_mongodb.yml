@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+          app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:latest
+        volumeMounts:
+            - mountPath: /data
+              name: data-path
+
+        ports:
+          - containerPort: 27017
+        env:
+        - name: MONGO_ROOT_USERNAME
+          value: admin
+        - name: MONGO_ROOT_PASSWORD
+          value: admin
+      volumes:
+        - name: data-path
+          hostPath: 
+            path: /home/data/db
+            type: DirectoryOrCreate
+
+
+
+
+

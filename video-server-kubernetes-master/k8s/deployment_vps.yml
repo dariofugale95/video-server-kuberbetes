@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: videoprocessingservice
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+          app: videoprocessingservice
+  template:
+    metadata:
+      labels:
+        app: videoprocessingservice
+    spec:
+      containers:
+      - name: videoprocessingservice
+        image: videoprocessingservice:v1
+        volumeMounts:
+            - mountPath: /storage
+              name: storage-path 
+
+        ports:
+          - containerPort: 8085
+        imagePullPolicy: Never
+        env:
+        - name: urlVPSer
+          value: videoprocessingservice
+        - name: KAFKA_ADDRESS
+          value: kafkaa:9092
+        - name: KAFKA_GROUP_ID
+          value: vps-group
+        - name: KAFKA_MAIN_TOPIC
+          value: main-topic
+
+      volumes:
+        - name: storage-path
+          hostPath: 
+            path: /home/Storage
+            type: DirectoryOrCreate
+
+
+
+

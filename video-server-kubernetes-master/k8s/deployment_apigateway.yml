@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apigateway
+spec:
+  replicas: 1
+  selector:
+      matchLabels:
+          app: apigateway
+  template:
+    metadata:
+      labels:
+        app: apigateway
+    spec:
+      containers:
+      - name: apigateway
+        image: apigateway:v1
+        volumeMounts:
+            - mountPath: /storage
+              name: storage-path
+            - mountPath: /logs
+              name: logs-path    
+        ports:
+          - containerPort: 8081
+        imagePullPolicy: Never
+        env:
+        - name: urlVMSer
+          value: videomanagementservice
+      volumes:
+        - name: storage-path
+          hostPath: 
+            path: /home/Storage
+            type: DirectoryOrCreate
+        - name: logs-path
+          hostPath: 
+            path: /home/data/stats
+            type: DirectoryOrCreate
+
+
+
+
