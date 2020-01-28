@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: spark
+spec:
+  ports:
+    - name: spark
+      port: 7077
+      targetPort: 7077
+  selector:
+    component: spark

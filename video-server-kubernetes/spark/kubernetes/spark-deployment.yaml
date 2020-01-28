@@ -1,0 +1,33 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: spark
+  template:
+    metadata:
+      labels:
+        component: spark
+    spec:
+      containers:
+        - name: spark
+          image: spark-hadoop:v1
+          command: ["/spark-master"]
+          volumeMounts:
+              - mountPath: /streaming
+                name: spark-path 
+          
+          ports:
+            - containerPort: 7077
+          imagePullPolicy: Never
+          resources:
+            requests:
+              cpu: 100m
+      volumes:
+        - name: spark-path
+          hostPath: 
+            path: /home/spark
+            type: DirectoryOrCreate

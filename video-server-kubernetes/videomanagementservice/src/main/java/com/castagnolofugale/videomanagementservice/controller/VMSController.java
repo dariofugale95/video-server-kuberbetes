@@ -97,12 +97,6 @@ public class VMSController {
         return repository.findAll();
     }
 
-    // GET: /videos/:id
-    @GetMapping(path = "/videos/{id}")
-    public Mono<VideoInformation> getVideoInformation(@PathVariable String id){
-        return repository.findById(new ObjectId(id));
-    }
-
     // -------------- USER ---------------------
 
     // POST: /register
@@ -132,6 +126,7 @@ public class VMSController {
     public @ResponseBody String deleteUser(@PathVariable ObjectId _id){
         return userService.deleteUser(_id);
     }
+
 
     // GET: /videos/:id
     @GetMapping(path = "/videos/{id}")

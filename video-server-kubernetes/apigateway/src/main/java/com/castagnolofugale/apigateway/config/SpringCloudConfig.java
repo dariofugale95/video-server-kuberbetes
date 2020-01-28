@@ -1,5 +1,6 @@
 package com.castagnolofugale.apigateway.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -7,9 +8,10 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.kafka.core.KafkaTemplate;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -21,6 +23,10 @@ public class SpringCloudConfig {
     private String urlRed;
     @Value(value = "${URi}")
     private String uri_videos;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+    @Value(value="${KAFKA_METRICS_TOPIC}")
+    private String metricstopic;
 
     @Bean
     public RouteLocator apiGatewayRoutes(RouteLocatorBuilder builder){
@@ -65,9 +71,9 @@ public class SpringCloudConfig {
     public GlobalFilter a(){
         return (exchange, chain) -> {
             //informazioni sull'api: metodo,uri, input size payload
-            logger.info("#API Method|\n" + exchange.getRequest().getMethod()+"|"+exchange.getRequest().getURI()+'\n');
-            logger.info("#API URI|\n"+exchange.getRequest().getURI()+'\n');
-            logger.info("#Payload Input Size|\n"+ exchange.getRequest().getHeaders().getFirst("Content-Length")+'\n');
+            logger.info("#APIMethod|\n" + exchange.getRequest().getMethod()+"|"+exchange.getRequest().getURI()+'\n');
+            logger.info("#APIURI|\n"+exchange.getRequest().getURI()+'\n');
+            logger.info("#PayloadInputSize|\n"+ exchange.getRequest().getHeaders().getFirst("Content-Length")+'\n');
 
 
 
@@ -75,18 +81,20 @@ public class SpringCloudConfig {
             long start = date.getTime();
             //numero richieste in 1s
             if(start - time >= rif){
-                logger.info("#Count of requests in 1s|\n"+count+'\n');
+                logger.info("#Countofrequestsin1s|\n"+count+'\n');
+                kafkaTemplate.send(metricstopic, "RichiesteSecondo|" + count);
                 time = start;
                 count = 1;
             }
             else count++;
 
             return chain.filter(exchange).then(Mono.fromRunnable(()->{
-                logger.info("#Payload Output Size|\n"+exchange.getResponse().getHeaders().getFirst("Content-Length")+'\n');
+                logger.info("#PayloadOutputSize|\n"+exchange.getResponse().getHeaders().getFirst("Content-Length")+'\n');
 
                 Date date_t = new Date();
 
-                logger.info("#Response Time in ms|\n"+(long)(date_t.getTime() - start)+'\n');
+                logger.info("#ResponseTimeinms|\n"+(long)(date_t.getTime() - start)+'\n');
+                kafkaTemplate.send(metricstopic, "TempoRisposta|" + (long)(date_t.getTime() - start));
 
                 logger.severe("#ERRORS\n");
             }));

@@ -1,3 +1,5 @@
-/home/dario/Pubblici/Repos/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/ApigatewayApplication.java
-/home/dario/Pubblici/Repos/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/controller/Controller.java
-/home/dario/Pubblici/Repos/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/config/SpringCloudConfig.java
+/home/dario/Scaricati/video-server-homework/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/ApigatewayApplication.java
+/home/dario/Scaricati/video-server-homework/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/controller/Controller.java
+/home/dario/Scaricati/video-server-homework/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/KafkaTopicConfiguration.java
+/home/dario/Scaricati/video-server-homework/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/KafkaProducerConfiguration.java
+/home/dario/Scaricati/video-server-homework/video-server-kubernetes/apigateway/src/main/java/com/castagnolofugale/apigateway/config/SpringCloudConfig.java
