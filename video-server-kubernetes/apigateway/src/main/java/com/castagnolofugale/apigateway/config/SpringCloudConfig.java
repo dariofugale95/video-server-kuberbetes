@@ -75,8 +75,6 @@ public class SpringCloudConfig {
             logger.info("#APIURI|\n"+exchange.getRequest().getURI()+'\n');
             logger.info("#PayloadInputSize|\n"+ exchange.getRequest().getHeaders().getFirst("Content-Length")+'\n');
 
-
-
             Date date = new Date();
             long start = date.getTime();
             //numero richieste in 1s

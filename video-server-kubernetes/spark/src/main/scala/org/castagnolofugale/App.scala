@@ -1,7 +1,6 @@
 package org.castagnolofugale
 
-import java.io.{File, PrintWriter}
-import java.net.URLEncoder
+import java.io.{File, FileOutputStream, PrintWriter}
 
 import com.pengrad.telegrambot.request.SendMessage
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -10,12 +9,13 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kafka010._
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
-
+import scala.io.Source
 /**
  * @author ${user.name}
  */
 
 object App {
+
 
   def main(args : Array[String]): Unit = {
 
@@ -47,9 +47,6 @@ object App {
     val streamingFile = streamingPath+"data.txt"
 
     val input = stream.map(_.value)
-    //val count = lines.flatMap(line => line.split(" ")).filter(word => word.contains("#")).map(word => (word, 1))
-    //val reduced = count.reduceByKey(_ + _)
-    //reduced.saveAsTextFiles("hdfs://resources/spark_data")
 
     input.foreachRDD(rdd => { //per ogni stream
       if(rdd.isEmpty()) println("Empty stream.")
@@ -58,15 +55,73 @@ object App {
         if(!new File((streamingPath)).exists()){
           new File(streamingPath).mkdirs()
         }
-        val printWriter = new PrintWriter(streamingFile)
-        val lines = rdd.flatMap(line => line.split(" ")).map(w => (w,1))
-        val numSamples = lines.count()
-        val sumValues = lines.reduceByKey((accumulatedValue: Int, currentValue: Int) => accumulatedValue + currentValue)
-        val avgValue = sumValues.map(x => (x._2/numSamples)).reduce((y,z)=>y+z)
-        println("Il valore medio di non so che cosa e': "+ avgValue.toString)
-        printWriter.write(avgValue.toString)
+
+
+        val avgTime = rdd.map(_.split("\\|"))
+          .filter(word => word.contains("TempoRisposta"))
+          .map(x => (x(0),x(1)))
+          .map(_._2.toInt).mean()
+
+        val avgRequests = rdd.map(_.split("\\|"))
+          .filter(word => word.contains("RichiesteSecondo"))
+          .map(x => (x(0),x(1)))
+          .map(_._2.toInt).mean()
+
+
+        new PrintWriter(new FileOutputStream(new File(streamingFile),true)) { append(avgRequests.toString+" "+avgTime.toString+"\n"); close }
+
+
+        val dataFile = Source.fromFile(streamingFile).getLines.toList
+        var sumRequest = 0.0
+        var sumTime  = 0.0
+        var T = 10
+
+        if(dataFile.size < T){
+          T = dataFile.size
+          dataFile.foreach(row => {
+            val pair = row.split(" ")
+            var valNumRequest = pair(0).toFloat
+            var valTime = pair(1).toFloat
+
+            sumTime += valTime
+            sumRequest += valNumRequest
+          })
+        }
+
+        val lastPair = dataFile.size - T
+        if(lastPair > 0){
+          dataFile.slice(lastPair,dataFile.size).foreach(row => {
+            val pair = row.split(" ")
+            var valNumRequest = pair(0).toFloat
+            var valTime = pair(1).toFloat
+
+            sumTime += valTime
+            sumRequest += valNumRequest
+          })
+        }
+
+        if(T == 0){
+          T = 1
+        }
+
+        val avgRequestPast = sumRequest/T
+        val avgTimePast = sumTime/T
+
+        println("_____________________________________________________________")
+        println("Numero di Richieste Media - ATTUALE: "+avgRequests+ ", PRECEDENTI: "+avgRequestPast)
+        println("Tempo di Risposta Media - ATTUALE: "+avgTime+", PRECEDENTI: "+avgTimePast+"ms")
+        println("_____________________________________________________________")
+
         println("Sending alarm message on telegram...\n")
-        bot.execute(new SendMessage(183503957, "Alarm message!"))
+
+        if(avgTime > avgTimePast*1.2 && avgRequests > avgRequestPast*1.2){
+          bot.execute(new SendMessage(183503957, "Numero di Richieste Media - ATTUALE: "+avgRequests+", PRECEDENTI: "+avgRequestPast+".\nTempo di Risposta Media - ATTUALE: "+avgTime+", PRECEDENTI: "+avgTimePast+"ms\n\nIncremento del tempo medio di risposta pari a "+((avgTime/avgTimePast)-1)*100+"%. Registrato anche un\nincremento del numero medio di richieste pari a "+((avgRequests/avgRequestPast)-1)*100+"%"))
+          bot.execute(new SendMessage(186181976, "Numero di Richieste Media - ATTUALE: "+avgRequests+", PRECEDENTI: "+avgRequestPast+".\nTempo di Risposta Media - ATTUALE: "+avgTime+", PRECEDENTI: "+avgTimePast+"ms\n\nIncremento del tempo medio di risposta pari a "+((avgTime/avgTimePast)-1)*100+"%. Registrato anche un\nincremento del numero medio di richieste pari a "+((avgRequests/avgRequestPast)-1)*100+"%"))
+        }
+        if(avgTime > avgTimePast*1.2){
+          bot.execute(new SendMessage(183503957,"Numero di Richieste Media - ATTUALE: "+avgRequests+", PRECEDENTI: "+avgRequestPast+".\nTempo di Risposta Media - ATTUALE: "+avgTime+", PRECEDENTI: "+avgTimePast+"ms\n\nIncremento del tempo medio di risposta pari a "+((avgTime/avgTimePast)-1)*100+"%. Non è stato registrato un\nincremento considerevole del numero medio di richieste."))
+          bot.execute(new SendMessage(186181976,"Numero di Richieste Media - ATTUALE: "+avgRequests+", PRECEDENTI: "+avgRequestPast+".\nTempo di Risposta Media - ATTUALE: "+avgTime+", PRECEDENTI: "+avgTimePast+"ms\n\nIncremento del tempo medio di risposta pari a "+((avgTime/avgTimePast)-1)*100+"%. Non è stato registrato un\nincremento considerevole del numero medio di richieste."))
+        }
       }
     })
     input.print();
