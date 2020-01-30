@@ -63,9 +63,11 @@ public class VMSListener {
             try {
                 Process p = Runtime.getRuntime().exec(cmd);
                 kafkaTemplate.send(mainTopic,"processed|"+id);
+
             } catch (IOException e) {
                 kafkaTemplate.send(mainTopic,"processingFailed|"+id);
                 e.printStackTrace();
+
             }
             return;
         }

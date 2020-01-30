@@ -65,6 +65,11 @@ public class SpringCloudConfig {
         }
     }
 
+    /*
+   le statistiche vengono scritte su un file di testo ed inoltre vengono inviate su un topic
+    della coda kafka in maniera tale da farle arrivare a Spark
+
+     */
 
     @Bean
     @Order(0)
@@ -72,15 +77,20 @@ public class SpringCloudConfig {
         return (exchange, chain) -> {
             //informazioni sull'api: metodo,uri, input size payload
             logger.info("#APIMethod|\n" + exchange.getRequest().getMethod()+"|"+exchange.getRequest().getURI()+'\n');
+            logger.info("____________________________________________________________"+'\n');
             logger.info("#APIURI|\n"+exchange.getRequest().getURI()+'\n');
+            logger.info("____________________________________________________________"+'\n');
             logger.info("#PayloadInputSize|\n"+ exchange.getRequest().getHeaders().getFirst("Content-Length")+'\n');
+            logger.info("____________________________________________________________"+'\n');
+
 
             Date date = new Date();
             long start = date.getTime();
             //numero richieste in 1s
             if(start - time >= rif){
                 logger.info("#Countofrequestsin1s|\n"+count+'\n');
-                kafkaTemplate.send(metricstopic, "RichiesteSecondo|" + count);
+                logger.info("____________________________________________________________"+'\n');
+                kafkaTemplate.send(metricstopic, "COUNT_OF_REQ_1S|" + count);
                 time = start;
                 count = 1;
             }
@@ -88,13 +98,13 @@ public class SpringCloudConfig {
 
             return chain.filter(exchange).then(Mono.fromRunnable(()->{
                 logger.info("#PayloadOutputSize|\n"+exchange.getResponse().getHeaders().getFirst("Content-Length")+'\n');
-
+                logger.info("____________________________________________________________"+'\n');
                 Date date_t = new Date();
 
                 logger.info("#ResponseTimeinms|\n"+(long)(date_t.getTime() - start)+'\n');
-                kafkaTemplate.send(metricstopic, "TempoRisposta|" + (long)(date_t.getTime() - start));
+                logger.info("____________________________________________________________"+'\n');
+                kafkaTemplate.send(metricstopic, "RESPONSE_TIME_IN_MS|" + (long)(date_t.getTime() - start));
 
-                logger.severe("#ERRORS\n");
             }));
         };
     }
