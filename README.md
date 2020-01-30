@@ -2,8 +2,7 @@
 ## Distributed Systems and Big Data
 
 ### Studenti:
-* Fugale Dario - Mat. O55000394
-* Castagnolo Giulia - Mat. O55000389
+Castagnolo Giulia - Mat. O55000389/Fugale Dario - Mat. O55000394 
 ____________________________________
 
 ## Homework #1 - video-server-docker 
