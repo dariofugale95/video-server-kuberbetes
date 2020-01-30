@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.castagnolofugale.videoprocessingservice.kafka.VMSListener</OriginalElement>
+  <nodes>
+    <node x="0.0" y="232.0">com.castagnolofugale.videoprocessingservice.VideoprocessingserviceApplication</node>
+    <node x="274.5" y="0.0">org.springframework.context.annotation.Configuration</node>
+    <node x="589.0" y="0.0">org.springframework.kafka.annotation.EnableKafka</node>
+    <node x="42.0" y="153.0">org.springframework.boot.autoconfigure.SpringBootApplication</node>
+    <node x="479.0" y="79.0">com.castagnolofugale.videoprocessingservice.KafkaConsumerConfiguration</node>
+    <node x="338.0" y="153.0">org.springframework.stereotype.Service</node>
+    <node x="229.00000000000003" y="79.0">com.castagnolofugale.videoprocessingservice.KafkaProducerConfiguration</node>
+    <node x="0.0" y="79.0">com.castagnolofugale.videoprocessingservice.KafkaTopicConfiguration</node>
+    <node x="324.0" y="232.0">com.castagnolofugale.videoprocessingservice.kafka.VMSListener</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.castagnolofugale.videoprocessingservice.KafkaTopicConfiguration" target="org.springframework.context.annotation.Configuration">
+      <point x="0.0" y="-14.5" />
+      <point x="104.5" y="54.0" />
+      <point x="297.6666666666667" y="54.0" />
+      <point x="-46.333333333333314" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.videoprocessingservice.KafkaConsumerConfiguration" target="org.springframework.kafka.annotation.EnableKafka">
+      <point x="57.5" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.videoprocessingservice.KafkaConsumerConfiguration" target="org.springframework.context.annotation.Configuration">
+      <point x="-57.5" y="-14.5" />
+      <point x="536.5" y="54.0" />
+      <point x="390.33333333333337" y="54.0" />
+      <point x="46.33333333333337" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.videoprocessingservice.kafka.VMSListener" target="org.springframework.stereotype.Service">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.videoprocessingservice.VideoprocessingserviceApplication" target="org.springframework.boot.autoconfigure.SpringBootApplication">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.videoprocessingservice.KafkaProducerConfiguration" target="org.springframework.context.annotation.Configuration">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="357.0" y="130.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

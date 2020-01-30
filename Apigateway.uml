@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.castagnolofugale.apigateway.ApigatewayApplication</OriginalElement>
+  <nodes>
+    <node x="264.0" y="0.0">org.springframework.context.annotation.Configuration</node>
+    <node x="0.0" y="232.0">com.castagnolofugale.apigateway.ApigatewayApplication</node>
+    <node x="437.0" y="79.0">com.castagnolofugale.apigateway.KafkaTopicConfiguration</node>
+    <node x="0.0" y="153.0">org.springframework.boot.autoconfigure.SpringBootApplication</node>
+    <node x="254.0" y="232.0">com.castagnolofugale.apigateway.controller.Controller</node>
+    <node x="250.0" y="79.0">com.castagnolofugale.apigateway.config.SpringCloudConfig</node>
+    <node x="0.0" y="79.0">com.castagnolofugale.apigateway.KafkaProducerConfiguration</node>
+    <node x="240.0" y="153.0">org.springframework.web.bind.annotation.RestController</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.castagnolofugale.apigateway.config.SpringCloudConfig" target="org.springframework.context.annotation.Configuration">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.apigateway.KafkaProducerConfiguration" target="org.springframework.context.annotation.Configuration">
+      <point x="0.0" y="-14.5" />
+      <point x="115.0" y="54.0" />
+      <point x="287.1666666666667" y="54.0" />
+      <point x="-46.333333333333314" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.apigateway.ApigatewayApplication" target="org.springframework.boot.autoconfigure.SpringBootApplication">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.apigateway.controller.Controller" target="org.springframework.web.bind.annotation.RestController">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="com.castagnolofugale.apigateway.KafkaTopicConfiguration" target="org.springframework.context.annotation.Configuration">
+      <point x="0.0" y="-14.5" />
+      <point x="541.5" y="54.0" />
+      <point x="379.83333333333337" y="54.0" />
+      <point x="46.33333333333337" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="323.0" y="130.5" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
