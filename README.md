@@ -10,7 +10,7 @@ ____________________________________
 
 - Spostarsi nella cartella "deploy" e digitare il seguente comando:
 
-docker-compose up 
+*docker-compose up*
 
 - Creazione account admin sul container di mongodb
 
