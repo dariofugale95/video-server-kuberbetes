@@ -1,5 +1,6 @@
 package com.castagnolofugale.apigateway.config;
 
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -7,9 +8,10 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -21,6 +23,7 @@ public class SpringCloudConfig {
     private String urlRed;
     @Value(value = "${URi}")
     private String uri_videos;
+
 
     @Bean
     public RouteLocator apiGatewayRoutes(RouteLocatorBuilder builder){
@@ -36,7 +39,7 @@ public class SpringCloudConfig {
                 .build();
     }
 
-    //parametri per filtro
+    //parametri per filtro globale
     private int count;
     private long time;
     private Logger logger  = Logger.getLogger("stats-metrics");
@@ -48,6 +51,7 @@ public class SpringCloudConfig {
         this.time = 0;
 
         try {
+            //le statistiche vengono salvate nel file metrics.log presente nella directory logs
             handler = new FileHandler("/logs/metrics.log");
             logger.addHandler(handler);
             SimpleFormatter formatter = new SimpleFormatter();
@@ -59,36 +63,45 @@ public class SpringCloudConfig {
         }
     }
 
+    /*
+   le statistiche vengono scritte su un file di testo
+
+     */
 
     @Bean
     @Order(0)
     public GlobalFilter a(){
         return (exchange, chain) -> {
             //informazioni sull'api: metodo,uri, input size payload
-            logger.info("#API Method|\n" + exchange.getRequest().getMethod()+"|"+exchange.getRequest().getURI()+'\n');
-            logger.info("#API URI|\n"+exchange.getRequest().getURI()+'\n');
-            logger.info("#Payload Input Size|\n"+ exchange.getRequest().getHeaders().getFirst("Content-Length")+'\n');
-
+            logger.info("#APIMethod|\n" + exchange.getRequest().getMethod()+"|"+exchange.getRequest().getURI()+'\n');
+            logger.info("____________________________________________________________"+'\n');
+            logger.info("#APIURI|\n"+exchange.getRequest().getURI()+'\n');
+            logger.info("____________________________________________________________"+'\n');
+            logger.info("#PayloadInputSize|\n"+ exchange.getRequest().getHeaders().getFirst("Content-Length")+'\n');
+            logger.info("____________________________________________________________"+'\n');
 
 
             Date date = new Date();
             long start = date.getTime();
             //numero richieste in 1s
             if(start - time >= rif){
-                logger.info("#Count of requests in 1s|\n"+count+'\n');
+                logger.info("#Countofrequestsin1s|\n"+count+'\n');
+                logger.info("____________________________________________________________"+'\n');
+
                 time = start;
                 count = 1;
             }
             else count++;
 
             return chain.filter(exchange).then(Mono.fromRunnable(()->{
-                logger.info("#Payload Output Size|\n"+exchange.getResponse().getHeaders().getFirst("Content-Length")+'\n');
-
+                logger.info("#PayloadOutputSize|\n"+exchange.getResponse().getHeaders().getFirst("Content-Length")+'\n');
+                logger.info("____________________________________________________________"+'\n');
                 Date date_t = new Date();
 
-                logger.info("#Response Time in ms|\n"+(long)(date_t.getTime() - start)+'\n');
+                logger.info("#ResponseTimeinms|\n"+(long)(date_t.getTime() - start)+'\n');
+                logger.info("____________________________________________________________"+'\n');
 
-                logger.severe("#ERRORS\n");
+
             }));
         };
     }

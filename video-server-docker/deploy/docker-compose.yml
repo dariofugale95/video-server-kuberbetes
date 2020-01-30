@@ -32,37 +32,6 @@ services:
     networks:
       video-network:
 
-  
-  prometheus:
-
-    image: prom/prometheus
-
-    container_name: prometheus-container
-
-    ports:
-      - "9090:9090"
-
-    volumes:
-      - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-
-    build:
-        context: ../prometheus
-        dockerfile: Dockerfile-dev
-
-  
-
-  grafana:
-
-    image: grafana/grafana
-
-    container_name: grafana-container
-
-    ports:
-      - "3000:3000"
-
 
   videomanagementservice:
 

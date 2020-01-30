@@ -15,11 +15,16 @@ public class VideoInformation {
     private String videoName;
 
     private String authorName;
+    private String user;
+
+    private VideoInformationStatus status;
 
     @JsonCreator
-    public VideoInformation(String videoName, String authorName){
+    public VideoInformation(String videoName, String authorName, String user){
         this.videoName = videoName;
         this.authorName = authorName;
+        this.user=user;
+        this.status = VideoInformationStatus.WAITINGUPLOAD;
     }
 
     @JsonGetter("_id")
@@ -39,10 +44,15 @@ public class VideoInformation {
         return videoName;
     }
 
+    public String getUser() {
+        return user;
+    }
+
     public void setVideoName(String videoName) {
         this.videoName = videoName;
     }
 
+    public void setUser(String user) { this.user = user;}
     public String getAuthorName() {
         return authorName;
     }
@@ -51,5 +61,11 @@ public class VideoInformation {
         this.authorName = authorName;
     }
 
+    public VideoInformationStatus getStatus() {
+        return status;
+    }
 
+    public void setStatus(VideoInformationStatus status) {
+        this.status = status;
+    }
 }

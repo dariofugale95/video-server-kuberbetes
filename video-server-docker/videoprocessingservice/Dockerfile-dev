@@ -1,19 +1,9 @@
 FROM java:8
 WORKDIR /app
-
-RUN apt-get update ; apt-get install -y git build-essential gcc make yasm autoconf automake cmake libtool checkinstall libmp3lame-dev pkg-config libunwind-dev zlib1g-dev libssl-dev libx264-dev libvpx-dev
-
-RUN apt-get install -y --no-install-recommends libc6-dev libgdiplus wget software-properties-common
-
-#RUN RUN apt-add-repository ppa:git-core/ppa && apt-get update && apt-get install -y git
-
-RUN wget https://www.ffmpeg.org/releases/ffmpeg-4.0.2.tar.gz
-RUN tar -xzf ffmpeg-4.0.2.tar.gz; rm -r ffmpeg-4.0.2.tar.gz
-RUN cd ./ffmpeg-4.0.2; ./configure --enable-gpl --enable-libmp3lame --enable-decoder=mjpeg,png --enable-encoder=png --enable-openssl --enable-nonfree --enable-libx264
-
-
-RUN cd ./ffmpeg-4.0.2; make -j8
-RUN  cd ./ffmpeg-4.0.2; make install
-
+RUN echo "deb [check-valid-until=no] http://cdn-fastly.deb.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
+RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
+RUN apt-get -o Acquire::Check-Valid-Until=false update
+RUN apt-get install -y ffmpeg
 ADD ./target/videoprocessingservice-0.0.1-SNAPSHOT.jar ./service.jar
 CMD java -jar service.jar
