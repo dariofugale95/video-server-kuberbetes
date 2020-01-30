@@ -57,13 +57,13 @@ object App {
         }
 
 
-        val avgTime = rdd.map(_.split("\\|"))
-          .filter(word => word.contains("TempoRisposta"))
+         val avgTime = rdd.map(_.split("\\|"))
+          .filter(word => word.contains("RESPONSE_TIME_IN_MS"))
           .map(x => (x(0),x(1)))
           .map(_._2.toInt).mean()
 
         val avgRequests = rdd.map(_.split("\\|"))
-          .filter(word => word.contains("RichiesteSecondo"))
+          .filter(word => word.contains("COUNT_OF_REQ_1S"))
           .map(x => (x(0),x(1)))
           .map(_._2.toInt).mean()
 
