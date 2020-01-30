@@ -78,10 +78,15 @@ public class VMSController {
 
         Mono<VideoInformation> info;
         info = repository.findById(new ObjectId(id));
-        if(info.block()==null || !(info.block().getStatus().equals("WAITINGUPLOAD"))) {
+        String status;
+        status=info.block().getStatus().toString();
+
+
+        if(info.block()==null || !(status.equals("WAITINGUPLOAD"))) {
 
             return info;
         }
+
 
         //si verifica se già esiste la cartella con l'id video passato
         if(!new File(videosPath).exists()){
