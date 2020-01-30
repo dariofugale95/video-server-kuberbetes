@@ -32,16 +32,16 @@ ___________________________________
 
 
 ### Quick Start
-1) creare i file .jar delle applicazioni spring relativi ai componenti dell'architettura.
+1) Creare i file .jar delle applicazioni spring relativi ai componenti dell'architettura.
 
-2) lanciare minikube (preferibilmente) con le seguenti risorse:
+2) Lanciare minikube (preferibilmente) con le seguenti risorse:
 
 ```bash
 minikube start --vm-driver=kvm2 --memory=8120 --cpus=4 
 eval $(minikube docker-env)
 ```
 
-3) effettuare i build delle immagini. I dockerfiles dei componenti si trovano all'interno delle relative directory
+3) Effettuare i build delle immagini. I dockerfiles dei componenti si trovano all'interno delle relative directory
 ```bash
 docker build -t apigateway:v1 . -f Dockerfile-dev 
 docker build -t videomanagementservice:v1 . -f Dockerfile-dev
@@ -49,14 +49,14 @@ docker build -t videoprocessingservice:v1 . -f Dockerfile-dev
 docker build -t spark-hadoop:v1 . -f Dockerfile-prod
 ```
 
-4) creare i deployments, pods e services. Dalla main directory del progetto video-server-kubernetes, lanciare:
+4) Creare i deployments, pods e services. Dalla main directory del progetto video-server-kubernetes, lanciare:
 ```bash
 kubectl apply -f ./k8s
 cd spark/
 bash create.sh
 ```
 
-5) creare un account admin all'interno del pod di mongodb 
+5) Creare un account *admin* all'interno del pod di mongodb 
 ```bash
 kubectl exec -it <NOMEPOD_MONGODB> mongo
 use video-server
